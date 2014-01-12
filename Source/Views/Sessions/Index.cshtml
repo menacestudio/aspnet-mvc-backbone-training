@@ -1,0 +1,96 @@
+﻿@{
+    ViewBag.Title = "Index";
+    ViewBag.PageClass = "sessions-page";
+}
+
+<h2>Sessions, Backbone.JS Way</h2>
+<div id="session" class="row">
+    <button class="btn btn-primary" id="addSession">
+        <span class="glyphicon glyphicon-plus"></span> Add Session
+    </button>
+
+    <!-- Sessions -->
+    <div class="col-md-12">
+        <div class="table-responsive sessions-grid">
+            <table id="tblSessions" class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>Session Name</th>
+                        <th>Session Date</th>
+                        <th>System</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="modal-container" class="modal fade" tabindex="-1" data-width="760"></div>
+
+<!-- Templates -->
+@section templates
+{
+    <script id="form-tmpl" type="text/x-html">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">
+                Manage Session
+            </h4>
+        </div>
+        <form id="frmSession" role="form" class="form-horizontal">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="SessionName" class="col-md-4 control-label">Session Name:</label>
+                            <input type="text" id="SessionName" name="SessionName" class="form-control" placeholder="Session Name" value="<%- SessionName %>" />
+                        </div>
+                        <div class="form-group">
+                            <label for="SessionDate" class="col-md-4 control-label">Session Date:</label>
+                            <input type="text" id="SessionDate" name="SessionDate" class="form-control datepicker" placeholder="Session Date" value="<%- moment(SessionDate).format('M/DD/YYYY') %>" />
+                        </div>
+                        <div class="form-group">
+                            <label for="System" class="col-md-4 control-label">System:</label>
+                            <select id="System" name="System" class="form-control">
+                                <% _.each(systems, function(obj){ %>
+                                <option value="<%- obj %>"
+                                    <% if(System===obj){%> selected="selected" <%} %>>
+                                    <%- obj %>
+                                </option>
+                                <%}) %>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+                <button id="saveSession" class="btn btn-primary">Save Session</button>
+            </div>
+        </form>
+    </script>
+
+    <script id="sessionrow-tmpl" type="text/x-html">
+        <td>
+            <button class="edit btn btn-primary edit" data-id="<%- id %>">
+                <span class="glyphicon glyphicon-pencil"></span>
+                Edit
+            </button>&nbsp;
+            <button class="delete btn btn-danger delete" data-id="<%- id %>">
+                <span class="glyphicon glyphicon-trash"></span>
+                Delete
+            </button>
+        </td>
+        <td><%- SessionName %></td>
+        <td><%- moment(SessionDate).format("M/DD/YYYY") %></td>
+        <td><%- System %></td>
+    </script>
+}
+
+@section scripts
+{
+    <script src="~/Scripts/app/sessions.js"></script>
+}

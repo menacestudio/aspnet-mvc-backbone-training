@@ -1,0 +1,134 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    ViewBag.PageClass = "home-page";
+}
+
+<h1>Sessions, Old jQuery Way</h1>
+<div id="session" class="row">
+    <!-- Form -->
+    <div class="col-md-5">
+        <form id="frmSession" role="form" class="form-horizontal">
+            <input type="hidden" id="id" />
+            <div class="form-group">
+                <label for="sessionName" class="col-md-4 control-label">Session Name:</label>
+                <input type="text" id="sessionName" name="sessionName" class="form-control" placeholder="Session Name" />
+            </div>
+            <div class="form-group">
+                <label for="sessionDate" class="col-md-4 control-label">Session Date:</label>
+                <input type="text" id="sessionDate" name="sessionDate" class="form-control datepicker" placeholder="Session Date" />
+            </div>
+            <div class="form-group">
+                <label for="system" class="col-md-4 control-label">System:</label>
+                <select id="system" name="system" class="form-control">
+                    <option>SEIS</option>
+                    <option>PROMIS</option>
+                    <option>EdJoin</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary" id="saveSession">Save Session</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Sessions -->
+    <div class="col-md-7">
+        <div class="table-responsive">
+            <table id="tblSessions" class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Options</th>
+                        <th>Session Name</th>
+                        <th>Session Date</th>
+                        <th>System</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- content goes here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section templates {
+    <script id="editRowTempl" type="text/x-html">
+        <tr data-id="<%- id %>">
+            <td>
+                <a class="edit btn btn-primary" href="#" data-id="<%- id %>">Edit</a>&nbsp;
+                <a class="delete btn btn-danger" href="#" data-id="<%- id %>">Delete</a>
+
+                <% if (IsEdit) { %>
+                <a class="delete btn btn-primary" href="#" data-id="<%- id %>">Save</a>
+                <%} %>
+            </td>
+            <td><%- SessionName %></td>
+            <td><%- moment(SessionDate).format("M/DD/YYYY") %></td>
+            <td><%- System %></td>
+        </tr>
+    </script>
+}
+
+@section scripts
+{
+    <script>
+        $(function () {
+            $('.datepicker').datepicker();
+
+            // Event handlers go here
+            var $tbody = $('#tblSessions tbody');
+            $('#session').on('submit', '#frmSession', function (e) {
+                e.preventDefault();
+
+                $.post('/Home/AddSession', $(this).serialize(), function (response) {
+                    var template = _.template($('#editRowTempl').html())(_.extend(response, { IsEdit: false }));
+
+                    $tbody.append(template);
+
+                    // Don't do this
+                    //$tbody.append('<tr>' +
+                    //    '<td><a class="edit btn btn-primary" href="#" data-id="' + response.SessionId + '">Edit</a>&nbsp;' +
+                    //    '<a class="delete btn btn-danger" href="#" data-id="' + response.SessionId + '">Delete</a>' +
+                    //    '</td>' +
+                    //    '<td>' + response.SessionName + '</td>' +
+                    //    '<td>' + response.SessionDate + '</td>' +
+                    //    '<td>' + response.System + '</td>' +
+                    //    '</tr>');
+
+                });
+            });
+
+            // Delete
+            $('#session').on('click', 'a.delete', function (e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                var self = $(this);
+                if (confirm('Are you sure?')) {
+                    $.post('/Home/DeleteSession', { id: id }, function (response) {
+                        self.closest('tr').remove();
+                    });
+                }
+            });
+
+            // Edit
+            $('#session').on('click', 'a.edit', function (e) {
+                e.preventDefault();
+
+                var id = $(this).data('id');
+                var $row = $tbody.find('tr[data-id="' + id + '"]');
+
+                $.each($row.find('td'), function (i, obj) {
+                    var $input = $('#frmSession input, select').get(i);
+                    if (i == 0) {
+                        $($input).val(id);
+                    } else {
+                        $($input).val($(obj).html());
+                    }
+
+                });
+            });
+
+        });
+    </script>
+
+}

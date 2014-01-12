@@ -1,0 +1,82 @@
+﻿@using Microsoft.AspNet.Identity
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Dev Training</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body @if (ViewBag.PageClass != null) { @: id=@ViewBag.PageClass
+            }>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Dev Training</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="home-page"><a href="/Home">Home</a></li>
+                    <li class="sessions-page"><a href="/Sessions">Sessions</a></li>
+                </ul>
+                <div id="authPlaceholder"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Dennis Rongo, INC.</p>
+        </footer>
+    </div>
+    
+    @RenderSection("templates", false)
+
+    <script>
+        app = window.app || {};
+        app.BootstrapData = @Html.Raw(Json.Encode(Model));
+
+        app.Auth = {
+            IsAuthenticated: @User.Identity.IsAuthenticated.ToString().ToLower(),
+            Email: '@ViewData["UserId"]'
+        };
+    </script>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Scripts/app/accounts.js")
+    <script>
+        $(function () {
+            $('.datepicker').datepicker();
+            // Navigation
+            $('.nav').children('li.' + $('body').prop('id')).addClass('active');
+        });
+    </script>
+    @RenderSection("scripts", required: false)
+    
+    <script id="authTemplateLoggedOut" type="text/x-html">
+            <div class="form-group">
+                <input id="Email" name="Email" type="text" placeholder="Email" class="form-control">
+            </div>
+            <div class="form-group">
+                <input id="Password" name="Password" type="password" placeholder="Password" class="form-control">
+            </div>
+            <button id="btnLogin" type="submit" class="btn btn-success">Sign in</button>
+    </script>
+    
+    <script id="authTemplateLoggedIn" type="text/x-html">
+        <span>Welcome <%- Email %>!</span>
+        <button id="btnProfile" type="submit" class="btn btn-success">Manage Profile</button>
+        <button id="btnLogout" type="submit" class="btn btn-danger">Sign out</button>
+    </script>
+</body>
+</html>
