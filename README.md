@@ -1,7 +1,8 @@
-### ASP.NET MVC with BackboneJS project
+### ASP.NET MVC Training
 
-An experimental project for using Backbone with ASP.NET MVC.
+An experimental project for using ASP.NET MVC with Backbone.JS and Bootstrap.
 
-Plugins used:
--Backbone syphon (https://github.com/derickbailey/backbone.syphon)
--Bootstrap Modal (https://github.com/jschr/bootstrap-modal)
+#### Plugins used:
+- Bootbox (http://bootboxjs.com)
+- Backbone syphon (https://github.com/derickbailey/backbone.syphon)
+- Bootstrap Modal (https://github.com/jschr/bootstrap-modal)
