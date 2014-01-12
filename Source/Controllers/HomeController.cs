@@ -4,10 +4,10 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Web;
 using System.Web.Mvc;
-using Dec1313.Models;
+using MVCTraining.Models;
 using Microsoft.Ajax.Utilities;
 
-namespace Dec1313.Controllers
+namespace MVCTraining.Controllers
 {
     public class HomeController : BaseController
     {

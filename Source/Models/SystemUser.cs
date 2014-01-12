@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Dec1313.Models
+namespace MVCTraining.Models
 {
     public class SystemUser
     {

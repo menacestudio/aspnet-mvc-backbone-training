@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Dec1313.Controllers
+namespace MVCTraining.Controllers
 {
     public class BaseController : Controller
     {

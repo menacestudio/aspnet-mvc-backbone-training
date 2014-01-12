@@ -3,7 +3,7 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
 
-namespace Dec1313
+namespace MVCTraining
 {
     public partial class Startup
     {

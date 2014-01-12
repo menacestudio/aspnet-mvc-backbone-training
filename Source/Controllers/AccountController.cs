@@ -9,10 +9,10 @@ using System.Web.Security;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
-using Dec1313.Models;
+using MVCTraining.Models;
 using Microsoft.Owin.Security.Twitter.Messages;
 
-namespace Dec1313.Controllers
+namespace MVCTraining.Controllers
 {
     //[Authorize]
     public class AccountController : BaseController

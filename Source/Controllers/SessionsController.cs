@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Dec1313.Models;
+using MVCTraining.Models;
 
-namespace Dec1313.Controllers
+namespace MVCTraining.Controllers
 {
     public class SessionsController : BaseController
     {
