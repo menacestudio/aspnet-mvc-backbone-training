@@ -19,7 +19,7 @@ namespace MVCTraining.Controllers
                 Session["sessions"] = sessions;
             }
 
-            return View(sessions);
+            return View();
         }
 
         // DELETE: /Sessions/Manage/

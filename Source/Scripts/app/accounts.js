@@ -32,9 +32,12 @@
                 var data = Backbone.Syphon.serialize(this);
 
                 $.post('/Account/AuthenticateUser', data, function (response) {
-                    app.Auth.IsAuthenticated = response.isValid;
-                    if (app.Auth.IsAuthenticated) {
-                        self.model.set({ Email: app.Auth.Email });
+                    if (response.isValid) {
+                        self.model.set({
+                            Email: response.user.Email,
+                            IsAuthenticated: true
+                        });
+
                         $authPlaceholder.html(new app.AccountViewLoggedIn({
                             model: self.model
                         }).render().el);
@@ -49,7 +52,6 @@
         app.AccountViewLoggedIn = Backbone.View.extend({
             template: _.template($('#authTemplateLoggedIn').html()),
 
-            attributes: { 'class': 'navbar-form navbar-right' },
             events: {
                 'click #btnProfile': 'manageProfile',
                 'click #btnLogout': 'logOut'

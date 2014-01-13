@@ -1,7 +1,6 @@
 ﻿(function ($, Backbone, app) {
     $(function () {
         // Declarations
-        app.Vent = _.extend({}, Backbone.Events);
         var modalContainer = $('#modal-container');
 
         // Model
@@ -133,6 +132,7 @@
             }
         });
 
+        // Sessions by System View
         app.SessionsBySystemView = Backbone.View.extend({
             tagName: 'ul',
             attributes: { 'class': 'list-group' },
@@ -165,6 +165,7 @@
             }
         });
 
+        // Sessions by System Row View
         app.SessionsBySystemRowView = Backbone.View.extend({
             tagName: 'li',
             attributes: { 'class': 'list-group-item' },

@@ -10,7 +10,7 @@
 
 </head>
 <body @if (ViewBag.PageClass != null) { @: id=@ViewBag.PageClass
-            }>
+                  }>
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -38,23 +38,23 @@
             <p>&copy; @DateTime.Now.Year - Dennis Rongo, INC.</p>
         </footer>
     </div>
-    
+
     @RenderSection("templates", false)
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Scripts/app/accounts.js")
 
     <script>
         app = window.app || {};
-        app.BootstrapData = @Html.Raw(Json.Encode(Model));
+        app.BootstrapData = @Html.Raw(Json.Encode(Model)) || {};
 
         app.Auth = {
             IsAuthenticated: @User.Identity.IsAuthenticated.ToString().ToLower(),
             Email: '@ViewData["UserId"]'
         };
-    </script>
+        app.Vent = _.extend({}, Backbone.Events);
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/Scripts/app/accounts.js")
-    <script>
         $(function () {
             $('.datepicker').datepicker();
             // Navigation
@@ -62,21 +62,38 @@
         });
     </script>
     @RenderSection("scripts", required: false)
-    
+
     <script id="authTemplateLoggedOut" type="text/x-html">
-            <div class="form-group">
-                <input id="Email" name="Email" type="text" placeholder="Email" class="form-control">
-            </div>
-            <div class="form-group">
-                <input id="Password" name="Password" type="password" placeholder="Password" class="form-control">
-            </div>
-            <button id="btnLogin" type="submit" class="btn btn-success">Sign in</button>
+        <div class="form-group">
+            <input id="Email" name="Email" type="text" placeholder="Email" class="form-control">
+        </div>
+        <div class="form-group">
+            <input id="Password" name="Password" type="password" placeholder="Password" class="form-control">
+        </div>
+        <button id="btnLogin" type="submit" class="btn btn-success">
+            <span class="glyphicon glyphicon-log-in"></span>
+            Sign in
+        </button>
     </script>
-    
+
     <script id="authTemplateLoggedIn" type="text/x-html">
-        <span>Welcome <%- Email %>!</span>
-        <button id="btnProfile" type="submit" class="btn btn-success">Manage Profile</button>
-        <button id="btnLogout" type="submit" class="btn btn-danger">Sign out</button>
+        <div class="navbar-form navbar-right">
+            <button class="btn btn-danger" type="submit" id="btnLogout">
+                <span class="glyphicon glyphicon-log-out"></span>
+                Sign out
+            </button>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Welcome <%- Email%>!</a></li>
+            <li class="dropdown">
+                <a data-toggle="dropdown" class="dropdown-toggle" href="#">User Menu <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a id="manageProfile" href="#">Manage Profile</a></li>
+                    <li class="divider"></li>
+                    <li><a id="manageSessions" href="#">Manage Sessions</a></li>
+                </ul>
+            </li>
+        </ul>
     </script>
 </body>
 </html>
