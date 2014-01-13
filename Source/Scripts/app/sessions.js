@@ -1,10 +1,11 @@
-﻿(function ($, Backbone, app) {
+﻿(function ($, Backbone, Module) {
     $(function () {
         // Declarations
-        var modalContainer = $('#modal-container');
+        var app = window.mvc,
+            modalContainer = $('#modal-container');
 
         // Model
-        app.SessionModel = Backbone.Model.extend({
+        Module.SessionModel = Backbone.Model.extend({
             url: '/Sessions/Manage',
             defaults: {
                 SessionName: '',
@@ -14,17 +15,17 @@
         });
 
         // Collection
-        app.SessionCollection = Backbone.Collection.extend({
-            model: app.SessionModel,
+        Module.SessionCollection = Backbone.Collection.extend({
+            model: Module.SessionModel,
             url: '/Sessions/Manage'
         });
 
         // Create the collection
-        var sessions = new app.SessionCollection();
+        var sessions = new Module.SessionCollection();
 
         // Views
         // Session View
-        app.SessionView = Backbone.View.extend({
+        Module.Views.SessionView = Backbone.View.extend({
             el: '#tblSessions',
             initialize: function () {
                 this.collection.fetch();
@@ -42,7 +43,7 @@
 
             renderRow: function (model) {
                 var self = this;
-                this.context.append(new app.SessionRowView({
+                this.context.append(new Module.Views.SessionRowView({
                     model: model,
                     collection: self.collection
                 }).render().el);
@@ -50,7 +51,7 @@
         });
 
         // Session Row View
-        app.SessionRowView = Backbone.View.extend({
+        Module.Views.SessionRowView = Backbone.View.extend({
             tagName: 'tr',
             template: _.template($('#sessionrow-tmpl').html()),
             events: {
@@ -79,7 +80,7 @@
                 });
             },
             editSession: function (e) {
-                var form = new app.FormView({
+                var form = new Module.Views.FormView({
                     collection: this.collection,
                     model: this.model
                 }).render().el;
@@ -89,7 +90,7 @@
         });
 
         // Form View
-        app.FormView = Backbone.View.extend({
+        Module.Views.FormView = Backbone.View.extend({
             template: _.template($('#form-tmpl').html()),
             render: function () {
                 this.$el.empty();
@@ -133,7 +134,7 @@
         });
 
         // Sessions by System View
-        app.SessionsBySystemView = Backbone.View.extend({
+        Module.Views.SessionsBySystemView = Backbone.View.extend({
             tagName: 'ul',
             attributes: { 'class': 'list-group' },
 
@@ -159,14 +160,14 @@
             },
 
             renderRow: function (count, system) {
-                this.$el.append(new app.SessionsBySystemRowView({
+                this.$el.append(new Module.Views.SessionsBySystemRowView({
                     count: count, system: system
                 }).render().el);
             }
         });
 
         // Sessions by System Row View
-        app.SessionsBySystemRowView = Backbone.View.extend({
+        Module.Views.SessionsBySystemRowView = Backbone.View.extend({
             tagName: 'li',
             attributes: { 'class': 'list-group-item' },
             template: _.template($('#sessionrowCount-tmpl').html()),
@@ -185,8 +186,8 @@
         $('.container').on('click', '#addSession', function (e) {
             e.preventDefault();
 
-            var form = new app.FormView({
-                model: new app.SessionModel(),
+            var form = new Module.Views.FormView({
+                model: new Module.SessionModel(),
                 collection: sessions
             }).render().el;
             modalContainer.html(form);
@@ -195,14 +196,14 @@
 
         // Instantiate the views
         // Sessions grid
-        $('.sessions-grid').html(new app.SessionView({
+        $('.sessions-grid').html(new Module.Views.SessionView({
             collection: sessions
         }).render().el);
 
         // Side panel
-        $('#sessionBySystems .panel-body').html(new app.SessionsBySystemView({
+        $('#sessionBySystems .panel-body').html(new Module.Views.SessionsBySystemView({
             collection: sessions
         }).render().el);
 
     });
-})(jQuery, Backbone, window.app = window.app || {});
+})(jQuery, Backbone, mvc.module('sessions'));

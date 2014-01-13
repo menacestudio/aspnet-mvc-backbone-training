@@ -35,34 +35,11 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - Dennis Rongo, INC.</p>
+            <p>&copy; @DateTime.Now.Year - Dennis Rongo, Inc</p>
         </footer>
     </div>
-
-    @RenderSection("templates", false)
-
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/Scripts/app/accounts.js")
-
-    <script>
-        app = window.app || {};
-        app.BootstrapData = @Html.Raw(Json.Encode(Model)) || {};
-
-        app.Auth = {
-            IsAuthenticated: @User.Identity.IsAuthenticated.ToString().ToLower(),
-            Email: '@ViewData["UserId"]'
-        };
-        app.Vent = _.extend({}, Backbone.Events);
-
-        $(function () {
-            $('.datepicker').datepicker();
-            // Navigation
-            $('.nav').children('li.' + $('body').prop('id')).addClass('active');
-        });
-    </script>
-    @RenderSection("scripts", required: false)
-
+    
+    <!-- Navbar templates -->
     <script id="authTemplateLoggedOut" type="text/x-html">
         <div class="form-group">
             <input id="Email" name="Email" type="text" placeholder="Email" class="form-control">
@@ -95,5 +72,41 @@
             </li>
         </ul>
     </script>
+    
+    <!-- Templates -->
+    @RenderSection("templates", false)
+    
+    <!-- Dependencies -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    <script>
+        this.mvc = {
+            bootstrappedData: @Html.Raw(Json.Encode(Model)) || {},
+            module: function() {
+                var modules = {};
+                return function(name) {
+                    if (modules[name]) {
+                        return modules[name];
+                    }
+                    return modules[name] = { Views: {} };
+                };
+            }(),
+            auth: {
+                isAuthenticated: @User.Identity.IsAuthenticated.ToString().ToLower(),
+                email: '@ViewData["UserId"]'
+            },
+            app: _.extend({}, Backbone.Events)
+        };
+
+        $(function () {
+            $('.datepicker').datepicker();
+            // Navigation
+            $('.nav').children('li.' + $('body').prop('id')).addClass('active');
+        });
+    </script>
+    @Scripts.Render("~/Scripts/app/accounts.js")
+    @RenderSection("scripts", required: false)
+
 </body>
 </html>

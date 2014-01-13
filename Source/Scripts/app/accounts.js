@@ -1,16 +1,18 @@
-﻿(function ($, Backbone, app) {
+﻿(function ($, Backbone, Module) {
     $(function () {
-        var $authPlaceholder = $('#authPlaceholder');
+        // Declarations
+        var app = window.mvc,
+            $authPlaceholder = $('#authPlaceholder');
 
-        app.AccountModel = Backbone.Model.extend({
+        Module.AccountModel = Backbone.Model.extend({
             url: '/Account/AuthenticateUser'
         });
         
         // Set the global account model
-        app.UserAccount = new app.AccountModel({ Email: app.Auth.Email });
+        Module.UserAccount = new Module.AccountModel({ Email: app.auth.email });
 
         // Views declaration
-        app.AccountViewLoggedOut = Backbone.View.extend({
+        Module.Views.AccountViewLoggedOut = Backbone.View.extend({
             tagName: 'form',
             attributes: { 'class': 'navbar-form navbar-right' },
 
@@ -38,7 +40,7 @@
                             IsAuthenticated: true
                         });
 
-                        $authPlaceholder.html(new app.AccountViewLoggedIn({
+                        $authPlaceholder.html(new Module.Views.AccountViewLoggedIn({
                             model: self.model
                         }).render().el);
                     } else {
@@ -49,7 +51,7 @@
             }
         });
 
-        app.AccountViewLoggedIn = Backbone.View.extend({
+        Module.Views.AccountViewLoggedIn = Backbone.View.extend({
             template: _.template($('#authTemplateLoggedIn').html()),
 
             events: {
@@ -70,7 +72,7 @@
 
                 $.post('/Account/LogOut', function (response) {
                     self.model.clear();
-                    $authPlaceholder.html(new app.AccountViewLoggedOut({
+                    $authPlaceholder.html(new Module.Views.AccountViewLoggedOut({
                         model: self.model
                     }).render().el);
                 });
@@ -80,16 +82,16 @@
 
 
         // Create new view instances
-        if (app.Auth.IsAuthenticated) {
-            $authPlaceholder.html(new app.AccountViewLoggedIn({
-                model: app.UserAccount
+        if (app.auth.isAuthenticated) {
+            $authPlaceholder.html(new Module.Views.AccountViewLoggedIn({
+                model: Module.UserAccount
             }).render().el);
         } else {
-            $authPlaceholder.html(new app.AccountViewLoggedOut({
-                model: app.UserAccount
+            $authPlaceholder.html(new Module.Views.AccountViewLoggedOut({
+                model: Module.UserAccount
             }).render().el);
         }
 
     });
 
-})(jQuery, Backbone, window.app = window.app || {});
+})(jQuery, Backbone, mvc.module('accounts'));
