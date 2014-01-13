@@ -33,7 +33,7 @@ namespace MVCTraining
                       "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
+                      "~/Content/bootstrap.min.css",
                       "~/Content/bootstrap-modal-bs3patch.css",
                       "~/Content/bootstrap-modal.css",
                       "~/Content/site.css",

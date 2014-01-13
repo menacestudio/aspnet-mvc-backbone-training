@@ -20,6 +20,9 @@
             url: '/Sessions/Manage'
         });
 
+        // Create the collection
+        var sessions = new app.SessionCollection();
+
         // Views
         // Session View
         app.SessionView = Backbone.View.extend({
@@ -92,9 +95,9 @@
             render: function () {
                 this.$el.empty();
 
-                var systems = ['SEIS', 'PROMIS', 'EDJoin'];
+                var systems = ['SEIS', 'PROMIS', 'EDJOIN'];
                 this.$el.html(this.template(
-                    _.extend(this.model.toJSON(), { systems: systems})));
+                    _.extend(this.model.toJSON(), { systems: systems })));
                 this.bindUI();
                 return this;
             },
@@ -107,12 +110,12 @@
 
                 var data = Backbone.Syphon.serialize(this),
                     isNew = this.model.isNew();
-                
+
                 this.model.set(data);
-                
-               // Push back to the server
+
+                // Push back to the server
                 this.model.save({ wait: true })
-                    .success(function (res) {           
+                    .success(function (res) {
                         if (isNew) {
                             self.collection.add(self.model);
                         }
@@ -120,7 +123,7 @@
                     .complete(function (res) {
                         modalContainer.modal('hide');
                     })
-                    .error(function(res) {
+                    .error(function (res) {
                         bootbox.alert(res);
                     });
 
@@ -130,9 +133,55 @@
             }
         });
 
-        // Instantiate the views and collections
-        var sessions = new app.SessionCollection();
-        $('#session').on('click', '#addSession', function (e) {
+        app.SessionsBySystemView = Backbone.View.extend({
+            tagName: 'ul',
+            attributes: { 'class': 'list-group' },
+
+            initialize: function () {
+                _.bindAll(this, 'renderRow');
+                this.listenTo(this.collection, 'sync', this.render, this);
+                this.listenTo(this.collection, 'add', this.render, this);
+                this.listenTo(this.collection, 'remove', this.render, this);
+            },
+            render: function () {
+                this.$el.empty();
+
+                var groupedSystems = this.collection.pluck('System');
+
+                if (groupedSystems.length > 0) {
+                    var t = _.countBy(groupedSystems, function (m) {
+                        return m;
+                    });
+                    _.each(t, this.renderRow);
+                }
+
+                return this;
+            },
+
+            renderRow: function (count, system) {
+                this.$el.append(new app.SessionsBySystemRowView({
+                    count: count, system: system
+                }).render().el);
+            }
+        });
+
+        app.SessionsBySystemRowView = Backbone.View.extend({
+            tagName: 'li',
+            attributes: { 'class': 'list-group-item' },
+            template: _.template($('#sessionrowCount-tmpl').html()),
+            initialize: function(params) {
+                this.count = params.count;
+                this.system = params.system;
+            },
+            render: function () {
+                this.$el.html(this.template(
+                    { System: this.system, Count: this.count }));
+                return this;
+            }
+        });
+
+        // Add session handler
+        $('.container').on('click', '#addSession', function (e) {
             e.preventDefault();
 
             var form = new app.FormView({
@@ -143,7 +192,14 @@
             modalContainer.modal('show');
         });
 
+        // Instantiate the views
+        // Sessions grid
         $('.sessions-grid').html(new app.SessionView({
+            collection: sessions
+        }).render().el);
+
+        // Side panel
+        $('#sessionBySystems .panel-body').html(new app.SessionsBySystemView({
             collection: sessions
         }).render().el);
 

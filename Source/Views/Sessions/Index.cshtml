@@ -3,15 +3,21 @@
     ViewBag.PageClass = "sessions-page";
 }
 
-<h2>Sessions, Backbone.JS Way</h2>
-<div id="session" class="row">
-    <button class="btn btn-primary" id="addSession">
-        <span class="glyphicon glyphicon-plus"></span> Add Session
-    </button>
+<h2>Manage Sessions</h2>
 
-    <!-- Sessions -->
+<div class="row">
     <div class="col-md-12">
+        <button class="btn btn-primary" id="addSession">
+            <span class="glyphicon glyphicon-plus"></span> Add Session
+        </button>
+    </div>
+</div>
+
+<div id="session" class="row">
+    <!-- Sessions -->
+    <div class="col-md-8">
         <div class="table-responsive sessions-grid">
+
             <table id="tblSessions" class="table table-striped table-hover">
                 <thead>
                     <tr>
@@ -23,6 +29,19 @@
                 </thead>
                 <tbody></tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- Right panel -->
+    <div class="col-md-4">
+        <div id="sessionBySystems" class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-tasks"></span>
+                Sessions by System
+            </div>
+            <div class="panel-body">
+
+            </div>
         </div>
     </div>
 </div>
@@ -87,6 +106,11 @@
         <td><%- SessionName %></td>
         <td><%- moment(SessionDate).format("M/DD/YYYY") %></td>
         <td><%- System %></td>
+    </script>
+
+    <script id="sessionrowCount-tmpl" type="text/x-html">
+        <span class="badge"><%- Count %></span>
+        <%- System %>
     </script>
 }
 
