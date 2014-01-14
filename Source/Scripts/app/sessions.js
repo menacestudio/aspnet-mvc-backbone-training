@@ -2,7 +2,9 @@
     $(function () {
         // Declarations
         var app = window.mvc,
-            modalContainer = $('#modal-container');
+            modalContainer = $('<div />')
+                .addClass('modal fade')
+                .attr({ tabindex: '-1', 'data-width': 760 });
 
         // Model
         Module.SessionModel = Backbone.Model.extend({
@@ -19,9 +21,6 @@
             model: Module.SessionModel,
             url: '/Sessions/Manage'
         });
-
-        // Create the collection
-        var sessions = new Module.SessionCollection();
 
         // Views
         // Session View
@@ -99,6 +98,9 @@
                 this.$el.html(this.template(
                     _.extend(this.model.toJSON(), { systems: systems })));
                 this.bindUI();
+                
+                modalContainer.html(this.$el);
+                modalContainer.modal('show');
                 return this;
             },
             events: {
@@ -181,29 +183,6 @@
                 return this;
             }
         });
-
-        // Add session handler
-        $('.container').on('click', '#addSession', function (e) {
-            e.preventDefault();
-
-            var form = new Module.Views.FormView({
-                model: new Module.SessionModel(),
-                collection: sessions
-            }).render().el;
-            modalContainer.html(form);
-            modalContainer.modal('show');
-        });
-
-        // Instantiate the views
-        // Sessions grid
-        $('.sessions-grid').html(new Module.Views.SessionView({
-            collection: sessions
-        }).render().el);
-
-        // Side panel
-        $('#sessionBySystems .panel-body').html(new Module.Views.SessionsBySystemView({
-            collection: sessions
-        }).render().el);
-
+        
     });
 })(jQuery, Backbone, mvc.module('sessions'));

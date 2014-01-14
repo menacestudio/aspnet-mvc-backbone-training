@@ -81,6 +81,7 @@
     @Scripts.Render("~/bundles/bootstrap")
 
     <script>
+        // Set global objects
         this.mvc = {
             bootstrappedData: @Html.Raw(Json.Encode(Model)) || {},
             module: function() {
@@ -98,14 +99,35 @@
             },
             app: _.extend({}, Backbone.Events)
         };
-
-        $(function () {
-            $('.datepicker').datepicker();
-            // Navigation
-            $('.nav').children('li.' + $('body').prop('id')).addClass('active');
-        });
     </script>
     @Scripts.Render("~/Scripts/app/accounts.js")
+    
+    <script>
+        var accountsModule = this.mvc.module('accounts');
+        
+        $(function () {
+            // Datepicker
+            $('.datepicker').datepicker();
+            
+            // Navigation
+            $('.nav').children('li.' + $('body').prop('id')).addClass('active');
+            
+            // Create new view instances
+            var $authPlaceholder = $('#authPlaceholder');
+          
+            if (mvc.auth.isAuthenticated) {
+                $authPlaceholder.html(new accountsModule.Views.AccountViewLoggedIn({
+                    context: $authPlaceholder,
+                    model: accountsModule.UserAccount
+                }).render().el);
+            } else {
+                $authPlaceholder.html(new accountsModule.Views.AccountViewLoggedOut({
+                    context: $authPlaceholder,
+                    model: accountsModule.UserAccount
+                }).render().el);
+            }
+        });
+    </script>
     @RenderSection("scripts", required: false)
 
 </body>
