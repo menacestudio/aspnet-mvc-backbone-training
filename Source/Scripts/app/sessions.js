@@ -82,9 +82,8 @@
                 var form = new Module.Views.FormView({
                     collection: this.collection,
                     model: this.model
-                }).render().el;
-                modalContainer.html(form);
-                modalContainer.modal('show');
+                }).render();
+
             }
         });
 
@@ -108,6 +107,8 @@
             },
             saveSession: function (e) {
                 e.preventDefault();
+
+                console.log(this);
                 var self = this;
 
                 var data = Backbone.Syphon.serialize(this),
