@@ -108,9 +108,7 @@
             saveSession: function (e) {
                 e.preventDefault();
 
-                console.log(this);
                 var self = this;
-
                 var data = Backbone.Syphon.serialize(this),
                     isNew = this.model.isNew();
 

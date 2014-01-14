@@ -40,6 +40,7 @@
                         });
 
                         self.context.html(new Module.Views.AccountViewLoggedIn({
+                            context: self.context,
                             model: self.model
                         }).render().el);
                     } else {
@@ -74,6 +75,7 @@
                 $.post('/Account/LogOut', function (response) {
                     self.model.clear();
                     self.context.html(new Module.Views.AccountViewLoggedOut({
+                        context: self.context,
                         model: self.model
                     }).render().el);
                 });
